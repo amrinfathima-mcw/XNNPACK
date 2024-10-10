@@ -560,6 +560,9 @@ enum xnn_status xnn_create_runtime_v4(
     // Ignore fused nodes
     if (node->type != xnn_node_type_invalid) {
       assert(node->create != NULL);
+      printf("runtime->opdata: %p\n", (void*)runtime->opdata);
+      printf("runtime->opdata + %zu: %p\n", i, (void*)(runtime->opdata + i));
+       printf("%ld\n",runtime->num_values);
       status = node->create(node, runtime->values, runtime->num_values, runtime->opdata + i, code_cache, weights_cache);
       if (status != xnn_status_success) {
         xnn_log_error("failed to create node %zu", i);
@@ -1019,6 +1022,7 @@ enum xnn_status xnn_invoke_runtime(
 
       const enum xnn_status status = xnn_run_operator_with_index(runtime->opdata[i].operator_objects[j], i, j, runtime->threadpool);
       if (status != xnn_status_success) {
+        printf("xnn_run_operator_with_index failed");
         return status;
       }
       if (runtime->profiling) {
